@@ -664,8 +664,7 @@ end
 -- yazi
 if is_available("yazi.nvim") and vim.fn.executable("yazi") == 1 then
   maps.n["<leader>r"] = {
-    -- TODO: use 'Yazi toggle' instead once yazi v0.4.0 is released.
-    "<cmd>Yazi<CR>",
+    "<cmd>Yazi toggle<CR>",
     desc = "File browser",
   }
 end
@@ -915,7 +914,7 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find themes",
   }
-  maps.n["<leader>ff"] = {
+  maps.n["<leader>fF"] = {
     function()
       require("telescope.builtin").live_grep({
         additional_args = function(args)
@@ -926,9 +925,9 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find words in project",
   }
-  maps.n["<leader>fF"] = {
-    function() require("telescope.builtin").live_grep() end,
-    desc = "Find words in project (no hidden)",
+  maps.n["<leader>ff"] = {
+    function() require("telescope.builtin").find_files() end,
+    desc = "Find files in project",
   }
   maps.n["<leader>f/"] = {
     function() require("telescope.builtin").current_buffer_fuzzy_find() end,
@@ -1223,15 +1222,6 @@ if is_available("nvim-coverage") then
   }
 end
 
--- Extra - nodejs testing commands
-maps.n["<leader>Ta"] = {
-  function() vim.cmd("TestNodejs") end,
-  desc = "All",
-}
-maps.n["<leader>Te"] = {
-  function() vim.cmd("TestNodejsE2e") end,
-  desc = "E2e",
-}
 
 -- nvim-ufo [code folding] --------------------------------------------------
 if is_available("nvim-ufo") then
@@ -1294,14 +1284,6 @@ if is_available("markdown-preview.nvim") or is_available("markmap.nvim") or is_a
       desc = "Open documentation",
     }
   end
-end
-
--- [neural] -----------------------------------------------------------------
-if is_available("neural") or is_available("copilot") then
-  maps.n["<leader>a"] = {
-    function() require("neural").prompt() end,
-    desc = "Ask chatgpt",
-  }
 end
 
 -- hop.nvim ----------------------------------------------------------------

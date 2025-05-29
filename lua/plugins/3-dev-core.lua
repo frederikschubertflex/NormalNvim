@@ -136,7 +136,7 @@ return {
   --  While on normal mode, markdown files will display highlights.
   {
     'MeanderingProgrammer/render-markdown.nvim',
-    ft = { "markdown" },
+    ft = { "markdown", "Avante" },
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     opts = {
       heading = {
@@ -155,6 +155,7 @@ return {
       pipe_table = {
         style = 'full', -- use 'normal' if colorcolumn is important for you.
       },
+      file_types = { "markdown", "Avante" },
     },
   },
 

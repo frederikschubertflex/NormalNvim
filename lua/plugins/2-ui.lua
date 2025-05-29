@@ -26,29 +26,14 @@ local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
 
 return {
 
-  --  tokyonight [theme]
-  --  https://github.com/folke/tokyonight.nvim
+  --  monokai-pro [theme]
+  --  https://github.com/loctvl842/monokai-pro
   {
-    "folke/tokyonight.nvim",
+    "loctvl842/monokai-pro.nvim",
     event = "User LoadColorSchemes",
     opts = {
-      dim_inactive = false,
-      styles = {
-        comments = { italic = true },
-        keywords = { italic = true },
-      },
+      filter = "pro"
     }
-  },
-
-  --  astrotheme [theme]
-  --  https://github.com/AstroNvim/astrotheme
-  {
-    "AstroNvim/astrotheme",
-    event = "User LoadColorSchemes",
-    opts = {
-      palette = "astrodark",
-      plugins = { ["dashboard-nvim"] = true },
-    },
   },
 
   --  alpha-nvim [greeter]
@@ -705,7 +690,7 @@ return {
 
     opts_extend = { "disable.ft", "disable.bt" },
     opts = {
-      preset = "classic", -- "classic", "modern", or "helix"
+      preset = "modern", -- "classic", "modern", or "helix"
       icons = {
         group = (vim.g.fallback_icons_enabled and "+") or "",
         rules = false,

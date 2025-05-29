@@ -80,11 +80,6 @@ function M.check()
       msg = "Used for nvim-spectre to find using fd.",
     },
     {
-      cmd = { "lazygit" },
-      type = "warn",
-      msg = "Used for mappings to pull up git TUI (Optional)",
-    },
-    {
       cmd = { "gitui" },
       type = "warn",
       msg = "Used for mappings to pull up git TUI (Optional)",
@@ -93,11 +88,6 @@ function M.check()
       cmd = { "delta" },
       type = "warn",
       msg = "Used by undotree to show a diff (Optional)",
-    },
-    {
-      cmd = { "grcov" },
-      type = "warn",
-      msg = "Used to show code coverage (Optional)",
     },
     {
       cmd = { "grcov" },
@@ -120,26 +110,6 @@ function M.check()
       msg = "Used to run rust tests (optional)\nNOTE: checkhealth won't detect this correctly, but you can confirm it works correctly with 'cargo nextest'.",
     },
     {
-      cmd = { "nunit" },
-      type = "warn",
-      msg = "Used to run C# tests (optional)\nNOTE: There is no way to install this system wide. To use it you must add it to your dotnet C# project: 'dotnet add package NUnit NUnit3TestAdapter'.",
-    },
-    {
-      cmd = { "csc" },
-      type = "warn",
-      msg = "Used by compiler.nvim to compile non dotnet C# files (Optional)",
-    },
-    {
-      cmd = { "mono" },
-      type = "warn",
-      msg = "Used by compiler.nvim to run non dotnet C# files. (Optional)",
-    },
-    {
-      cmd = { "dotnet" },
-      type = "warn",
-      msg = "Used by compiler.nvim and DAP to operate with dotnet projects (optional)\nNOTE: Make sure you also have the system package dotnet-sdk installed.",
-    },
-    {
       cmd = { "java" },
       type = "warn",
       msg = "Used by compiler.nvim and dap to operate with java (Optional)",
@@ -154,7 +124,6 @@ function M.check()
       type = "warn",
       msg = "Used by compiler.nvim to compile assembly x86_64 (Optional)",
     },
-
     {
       cmd = { "gcc" },
       type = "warn",
@@ -166,49 +135,14 @@ function M.check()
       msg = "Used by compiler.nvim to compile C++ (Optional)",
     },
     {
-      cmd = { "elixir" },
-      type = "warn",
-      msg = "Used by compiler.nvim to compile elixir (optional)",
-    },
-    {
-      cmd = { "Rscript" },
-      type = "warn",
-      msg = "Used by compiler.nvim to interpretate R (Optional)",
-    },
-    {
       cmd = { "python" },
       type = "warn",
       msg = "Used by compiler.nvim to interpretate python (Optional)",
     },
     {
-      cmd = { "nuitka" },
-      type = "warn",
-      msg = "Used by compiler.nvim to compile python to machine code (Optional)",
-    },
-    {
-      cmd = { "pyinstaller" },
-      type = "warn",
-      msg = "Used by compiler.nvim to compile python to bytecode (Optional)",
-    },
-    {
-      cmd = { "ruby" },
-      type = "warn",
-      msg = "Used by compiler.nvim to interpretate ruby (optional)",
-    },
-    {
       cmd = { "perl" },
       type = "warn",
       msg = "Used by compiler.nvim to interpretate perl (optional)",
-    },
-    {
-      cmd = { "swiftc" },
-      type = "warn",
-      msg = "Used by compiler.nvim to compile swift (optional)",
-    },
-    {
-      cmd = { "swift" },
-      type = "warn",
-      msg = "Used by compiler.nvim to compile swift (optional)",
     },
     {
       cmd = { "gfortran" },

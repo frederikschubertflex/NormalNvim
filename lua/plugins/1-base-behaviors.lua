@@ -25,8 +25,6 @@
 --       -> hot-reload.nvim        [config reload]
 --       -> distroupdate.nvim      [distro update]
 
-local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
-
 return {
 
   -- [yazi] file browser
@@ -38,7 +36,7 @@ return {
     cmd = { "Yazi", "Yazi cwd", "Yazi toggle" },
     opts = {
         open_for_directories = true,
-        floating_window_scaling_factor = (is_android and 1.0) or 0.71
+        floating_window_scaling_factor = 0.8
     },
   },
 
@@ -197,12 +195,12 @@ return {
       default = {
         find = {
           -- pick one of item in find_engine [ fd, rg ]
-          cmd = "fd",
+          cmd = "rg",
           options = {}
         },
         replace = {
           -- pick one of item in [ sed, oxi ]
-          cmd = "sed"
+          cmd = "oxi"
         },
       },
       is_insert_mode = true,    -- start open panel on is_insert_mode
@@ -438,7 +436,7 @@ return {
           end,
         },
         window = {
-          width = 30,
+          width = 50,
           mappings = {
             ["<space>"] = false,
             ["<S-CR>"] = "system_open",

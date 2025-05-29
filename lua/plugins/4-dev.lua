@@ -20,8 +20,6 @@
 --       -> markmap.nvim                   [markdown mindmap]
 
 --       ## ARTIFICIAL INTELLIGENCE
---       -> neural                         [chatgpt code generator]
---       -> copilot                        [github code suggestions]
 --       -> guess-indent                   [guess-indent]
 
 --       ## COMPILER
@@ -71,13 +69,9 @@ return {
       require("luasnip").filetype_extend("lua", { "luadoc" })
       require("luasnip").filetype_extend("python", { "pydoc" })
       require("luasnip").filetype_extend("rust", { "rustdoc" })
-      require("luasnip").filetype_extend("cs", { "csharpdoc" })
       require("luasnip").filetype_extend("java", { "javadoc" })
       require("luasnip").filetype_extend("c", { "cdoc" })
       require("luasnip").filetype_extend("cpp", { "cppdoc" })
-      require("luasnip").filetype_extend("php", { "phpdoc" })
-      require("luasnip").filetype_extend("kotlin", { "kdoc" })
-      require("luasnip").filetype_extend("ruby", { "rdoc" })
       require("luasnip").filetype_extend("sh", { "shelldoc" })
     end,
   },
@@ -317,46 +311,6 @@ return {
     config = function(_, opts) require("markmap").setup(opts) end,
   },
 
-  --  ARTIFICIAL INTELLIGENCE  -------------------------------------------------
-  --  neural [chatgpt code generator]
-  --  https://github.com/dense-analysis/neural
-  --
-  --  NOTE: In order for this plugin to work, you will have to set
-  --        the next env var in your OS:
-  --        OPENAI_API_KEY="my_key_here"
-  {
-    "dense-analysis/neural",
-    cmd = { "Neural" },
-    config = function()
-      require("neural").setup {
-        source = {
-          openai = {
-            api_key = vim.env.OPENAI_API_KEY,
-          },
-        },
-        ui = {
-          prompt_icon = require("base.utils").get_icon("PromptPrefix"),
-        },
-      }
-    end,
-  },
-
-  --  copilot [github code suggestions]
-  --  https://github.com/github/copilot.vim
-  --  As alternative to chatgpt, you can use copilot uncommenting this.
-  --  Then you must run :Copilot setup
-  -- {
-  --   "github/copilot.vim",
-  --   event = "User BaseFile"
-  -- },
-  -- copilot-cmp
-  -- https://github.com/zbirenbaum/copilot-cmp
-  -- {
-  --   "zbirenbaum/copilot-cmp",
-  --   opts = { suggesion = { enabled = false }, panel = { enabled = false } },
-  --   config = function (_, opts) require("copilot_cmp").setup(opts) end
-  -- },
-
   -- [guess-indent]
   -- https://github.com/NMAC427/guess-indent.nvim
   -- Note that this plugin won't autoformat the code.
@@ -366,6 +320,55 @@ return {
     event = "User BaseFile",
     opts = {}
   },
+
+  {
+  "yetone/avante.nvim",
+  event = "VeryLazy",
+  version = false, -- Never set this value to "*"! Never!
+  opts = {
+    provider = "gemini",
+  },
+  build = "make",
+  dependencies = {
+    "nvim-treesitter/nvim-treesitter",
+    "stevearc/dressing.nvim",
+    "nvim-lua/plenary.nvim",
+    "MunifTanjim/nui.nvim",
+    --- The below dependencies are optional,
+    "echasnovski/mini.pick", -- for file_selector provider mini.pick
+    "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+    "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+    "ibhagwan/fzf-lua", -- for file_selector provider fzf
+    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+    "zbirenbaum/copilot.lua", -- for providers='copilot'
+    {
+      -- support for image pasting
+      "HakonHarnes/img-clip.nvim",
+      event = "VeryLazy",
+      opts = {
+        verbose = false,
+        -- recommended settings
+        default = {
+          embed_image_as_base64 = false,
+          prompt_for_file_name = false,
+          drag_and_drop = {
+            insert_mode = true,
+          },
+          -- required for Windows users
+          use_absolute_path = true,
+        },
+      },
+    },
+    {
+      -- Make sure to set this up properly if you have lazy=true
+      'MeanderingProgrammer/render-markdown.nvim',
+      opts = {
+        file_types = { "markdown", "Avante" },
+      },
+      ft = { "markdown", "Avante" },
+    },
+  },
+},
 
   --  COMPILER ----------------------------------------------------------------
   --  compiler.nvim [compiler]
@@ -436,29 +439,6 @@ return {
     event = "User BaseFile",
     config = function()
       local dap = require("dap")
-
-      -- C#
-      dap.adapters.coreclr = {
-        type = 'executable',
-        command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg',
-        args = { '--interpreter=vscode' }
-      }
-      dap.configurations.cs = {
-        {
-          type = "coreclr",
-          name = "launch - netcoredbg",
-          request = "launch",
-          program = function() -- Ask the user what executable wants to debug
-            return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Program.exe', 'file')
-          end,
-        },
-      }
-
-      -- F#
-      dap.configurations.fsharp = dap.configurations.cs
-
-      -- Visual basic dotnet
-      dap.configurations.vb = dap.configurations.cs
 
       -- Java
       -- Note: The java debugger jdtls is automatically spawned and configured
@@ -553,83 +533,6 @@ return {
         }
       }
 
-      -- Go
-      -- Requires:
-      -- * You have initialized your module with 'go mod init module_name'.
-      -- * You :cd your project before running DAP.
-      dap.adapters.delve = {
-        type = 'server',
-        port = '${port}',
-        executable = {
-          command = vim.fn.stdpath('data') .. '/mason/packages/delve/dlv',
-          args = { 'dap', '-l', '127.0.0.1:${port}' },
-        }
-      }
-      dap.configurations.go = {
-        {
-          type = "delve",
-          name = "Compile module and debug this file",
-          request = "launch",
-          program = "./${relativeFileDirname}",
-        },
-        {
-          type = "delve",
-          name = "Compile module and debug this file (test)",
-          request = "launch",
-          mode = "test",
-          program = "./${relativeFileDirname}"
-        },
-      }
-
-      -- Dart / Flutter
-      dap.adapters.dart = {
-        type = 'executable',
-        command = vim.fn.stdpath('data') .. '/mason/bin/dart-debug-adapter',
-        args = { 'dart' }
-      }
-      dap.adapters.flutter = {
-        type = 'executable',
-        command = vim.fn.stdpath('data') .. '/mason/bin/dart-debug-adapter',
-        args = { 'flutter' }
-      }
-      dap.configurations.dart = {
-        {
-          type = "dart",
-          request = "launch",
-          name = "Launch dart",
-          dartSdkPath = "/opt/flutter/bin/cache/dart-sdk/", -- ensure this is correct
-          flutterSdkPath = "/opt/flutter",                  -- ensure this is correct
-          program = "${workspaceFolder}/lib/main.dart",     -- ensure this is correct
-          cwd = "${workspaceFolder}",
-        },
-        {
-          type = "flutter",
-          request = "launch",
-          name = "Launch flutter",
-          dartSdkPath = "/opt/flutter/bin/cache/dart-sdk/", -- ensure this is correct
-          flutterSdkPath = "/opt/flutter",                  -- ensure this is correct
-          program = "${workspaceFolder}/lib/main.dart",     -- ensure this is correct
-          cwd = "${workspaceFolder}",
-        }
-      }
-
-      -- Kotlin
-      -- Kotlin projects have very weak project structure conventions.
-      -- You must manually specify what the project root and main class are.
-      dap.adapters.kotlin = {
-        type = 'executable',
-        command = vim.fn.stdpath('data') .. '/mason/bin/kotlin-debug-adapter',
-      }
-      dap.configurations.kotlin = {
-        {
-          type = 'kotlin',
-          request = 'launch',
-          name = 'Launch kotlin program',
-          projectRoot = "${workspaceFolder}/app",     -- ensure this is correct
-          mainClass = "AppKt",                        -- ensure this is correct
-        },
-      }
-
       -- Javascript / Typescript (firefox)
       dap.adapters.firefox = {
         type = 'executable',
@@ -649,47 +552,6 @@ return {
       dap.configurations.javascript = dap.configurations.typescript
       dap.configurations.javascriptreact = dap.configurations.typescript
       dap.configurations.typescriptreact = dap.configurations.typescript
-
-      -- Javascript / Typescript (chromium)
-      -- If you prefer to use this adapter, comment the firefox one.
-      -- But to use this adapter, you must manually run one of these two, first:
-      -- * chromium --remote-debugging-port=9222 --user-data-dir=remote-profile
-      -- * google-chrome-stable --remote-debugging-port=9222 --user-data-dir=remote-profile
-      -- After starting the debugger, you must manually reload page to get all features.
-      -- dap.adapters.chrome = {
-      --  type = 'executable',
-      --  command = vim.fn.stdpath('data')..'/mason/bin/chrome-debug-adapter',
-      -- }
-      -- dap.configurations.typescript = {
-      --  {
-      --   name = 'Debug with Chromium',
-      --   type = "chrome",
-      --   request = "attach",
-      --   program = "${file}",
-      --   cwd = vim.fn.getcwd(),
-      --   sourceMaps = true,
-      --   protocol = "inspector",
-      --   port = 9222,
-      --   webRoot = "${workspaceFolder}"
-      --  }
-      -- }
-      -- dap.configurations.javascript = dap.configurations.typescript
-      -- dap.configurations.javascriptreact = dap.configurations.typescript
-      -- dap.configurations.typescriptreact = dap.configurations.typescript
-
-      -- PHP
-      dap.adapters.php = {
-        type = 'executable',
-        command = vim.fn.stdpath("data") .. '/mason/bin/php-debug-adapter',
-      }
-      dap.configurations.php = {
-        {
-          type = 'php',
-          request = 'launch',
-          name = 'Listen for Xdebug',
-          port = 9000
-        }
-      }
 
       -- Shell
       dap.adapters.bashdb = {
@@ -719,27 +581,6 @@ return {
         }
       }
 
-      -- Elixir
-      dap.adapters.mix_task = {
-        type = 'executable',
-        command = vim.fn.stdpath("data") .. '/mason/bin/elixir-ls-debugger',
-        args = {}
-      }
-      dap.configurations.elixir = {
-        {
-          type = "mix_task",
-          name = "mix test",
-          task = 'test',
-          taskArgs = { "--trace" },
-          request = "launch",
-          startApps = true, -- for Phoenix projects
-          projectDir = "${workspaceFolder}",
-          requireFiles = {
-            "test/**/test_helper.exs",
-            "test/**/*_test.exs"
-          }
-        },
-      }
     end, -- of dap config
     dependencies = {
       "rcarriga/nvim-dap-ui",
@@ -815,31 +656,17 @@ return {
     "nvim-neotest/neotest",
     cmd = { "Neotest" },
     dependencies = {
-      "sidlatau/neotest-dart",
-      "Issafalcon/neotest-dotnet",
-      "jfpedroza/neotest-elixir",
-      "fredrikaverpil/neotest-golang",
-      "rcasia/neotest-java",
       "nvim-neotest/neotest-jest",
-      "olimorris/neotest-phpunit",
       "nvim-neotest/neotest-python",
       "rouge8/neotest-rust",
-      "lawrence-laz/neotest-zig",
     },
     opts = function()
       return {
         -- your neotest config here
         adapters = {
-          require("neotest-dart"),
-          require("neotest-dotnet"),
-          require("neotest-elixir"),
-          require("neotest-golang"),
-          require("neotest-java"),
           require("neotest-jest"),
-          require("neotest-phpunit"),
           require("neotest-python"),
           require("neotest-rust"),
-          require("neotest-zig"),
         },
       }
     end,
