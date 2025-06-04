@@ -128,6 +128,17 @@ return {
     config = function(_, opts)
       -- calling setup() here is necessary to enable conceal and some features.
       require("nvim-treesitter.configs").setup(opts)
+
+      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+
+      parser_config.d2 = {
+        install_info = {
+          url  = "https://github.com/ravsii/tree-sitter-d2",
+          branch = "main",
+          files = { "src/parser.c" },
+        },
+        filetype = "d2",
+      }
     end,
   },
 
@@ -158,6 +169,12 @@ return {
       file_types = { "markdown", "Avante" },
     },
   },
+  {
+    "ravsii/tree-sitter-d2",
+    ft = "d2",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    build = "make nvim-install",
+  },
 
   --  [hex colors]
   --  https://github.com/brenoprata10/nvim-highlight-colors
@@ -169,40 +186,6 @@ return {
   },
 
   --  LSP -------------------------------------------------------------------
-
-  -- nvim-java [java support]
-  -- https://github.com/nvim-java/nvim-java
-  -- Reliable jdtls support. Must go before mason-lspconfig and lsp-config.
-  -- NOTE: Let's use our fork until they merge pull request
-  --       https://github.com/nvim-java/nvim-java/pull/376
-  {
-    "zeioth/nvim-java",
-    ft = { "java" },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "neovim/nvim-lspconfig",
-      "mfussenegger/nvim-dap",
-      "mason-org/mason.nvim",
-    },
-    opts = {
-      notifications = {
-        dap = false,
-      },
-      -- NOTE: One of these files must be in your project root directory.
-      --       Otherwise the debugger will end in the wrong directory and fail.
-      root_markers = {
-        'settings.gradle',
-        'settings.gradle.kts',
-        'pom.xml',
-        'build.gradle',
-        'mvnw',
-        'gradlew',
-        'build.gradle',
-        'build.gradle.kts',
-        '.git',
-      },
-    },
-  },
 
   --  nvim-lspconfig [lsp configs]
   --  https://github.com/neovim/nvim-lspconfig
@@ -335,7 +318,7 @@ return {
     opts = {
       aggressive_mode = false,
       excluded_lsp_clients = {
-        "null-ls", "jdtls", "marksman", "lua_ls"
+        "null-ls", "marksman", "lua_ls"
       },
       grace_period = (60 * 15),
       wakeup_delay = 3000,

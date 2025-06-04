@@ -440,10 +440,6 @@ return {
     config = function()
       local dap = require("dap")
 
-      -- Java
-      -- Note: The java debugger jdtls is automatically spawned and configured
-      -- by the plugin 'nvim-java' in './3-dev-core.lua'.
-
       -- Python
       dap.adapters.python = {
         type = 'executable',
